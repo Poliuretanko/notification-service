@@ -1,0 +1,13 @@
+### Create a message to send
+POST {{host}}:8080/emails
+Content-Type: application/json; charset=UTF-8
+
+{
+  "templateId": 1,
+  "recipients": [
+    {
+      "email": "denis@gorbatih.ru",
+      "name": "Denis Gorbatykh"
+    }
+  ]
+}
