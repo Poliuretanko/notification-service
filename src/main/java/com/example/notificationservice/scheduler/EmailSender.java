@@ -12,7 +12,7 @@ public class EmailSender {
         this.emailService = emailService;
     }
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 1)
     public void sendEmails() {
         emailService.sendNotifications();
     }

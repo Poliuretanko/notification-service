@@ -11,7 +11,9 @@
         </encoder>
     </appender>
 
-    <root level="debug">
+    <logger name="com.example.notificationservice" level="info" />
+
+    <root level="error">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

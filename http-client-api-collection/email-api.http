@@ -1,4 +1,4 @@
-### Create a message to send
+### Create a message to send (Dev environment)
 POST {{host}}:8080/emails
 Content-Type: application/json; charset=UTF-8
 
@@ -10,4 +10,21 @@ Content-Type: application/json; charset=UTF-8
       "name": "Denis Gorbatykh"
     }
   ]
+}
+
+### Create a message to send (Demo environment)
+POST {{host}}:8080/emails
+Content-Type: application/json; charset=UTF-8
+
+{
+  "templateId": 47,
+  "recipients": [
+    {
+      "email": "vic@tim.org",
+      "name": "John Doe"
+    }
+  ],
+  "params": {
+    "testSubject": "Joe2"
+  }
 }

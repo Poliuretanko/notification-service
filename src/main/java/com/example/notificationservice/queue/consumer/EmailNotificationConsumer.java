@@ -1,6 +1,5 @@
-package com.example.notificationservice.consumer;
+package com.example.notificationservice.queue.consumer;
 
-import com.example.notificationservice.config.ApplicationProperties;
 import com.example.notificationservice.dto.EmailDto;
 import com.example.notificationservice.service.EmailService;
 import io.awspring.cloud.sqs.annotation.SqsListener;
@@ -13,13 +12,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailNotificationConsumer {
 
+    private static final String QUEUE_NAME = "testBrevoQ";
+
     private final EmailService emailService;
 
     public EmailNotificationConsumer(EmailService emailService) {
         this.emailService = emailService;
     }
 
-    @SqsListener(value = "testBrevoQ")
+    @SqsListener(value = QUEUE_NAME)
     public void receiveMessage(Message<EmailDto> message) {
         var emailDto = message.getPayload();
         log.info("Message received from queue {}", message);

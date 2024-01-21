@@ -35,9 +35,7 @@ public class EmailService {
 
     public void sendNotifications() {
         var now = ZonedDateTime.now();
-        log.info("Collecting emails to send on {}", now);
         var emailsToSend = emailDao.getEmailsForSend(now);
-        log.info("Collected emails to send {}", emailsToSend.size());
         var emailsToResend = new ArrayList<Email>();
 
         emailsToSend.forEach(email -> {
@@ -48,7 +46,6 @@ public class EmailService {
             }
         });
 
-        log.info("Rescheduling failed emails {}", emailsToResend.size());
         emailDao.addEmails(emailsToResend);
     }
 
@@ -56,26 +53,27 @@ public class EmailService {
         var emailDto = EmailDto.from(email);
 
         try {
-            email.increaseAttemptsCount();
-
             log.info("Sending email {}", emailDto);
             brevoClient.sendEmail(emailDto);
 
             email.setStatus(EmailStatus.SENT);
         } catch (Exception e) {
-            log.info("Failed to send an email {} on {} attempt. The error {}",
+            log.info("Failed to send email {} on {} attempt. The error {}",
                     emailDto, email.getSendingAttempts(), e.getMessage());
             if (email.getSendingAttempts().equals(MAX_ATTEMPTS)) {
+                log.info("Abandoning email {}; Attempts are over", emailDto);
                 email.setStatus(EmailStatus.ATTEMPTS_ARE_OVER);
                 return;
             }
 
-            log.info("Resending an email {}", emailDto);
-            var previousAttempt = email.getNextAttempt();
+            var now = ZonedDateTime.now();
             var delay = delayService.calculateDelay(email.getSendingAttempts());
-            var nextAttempt = previousAttempt.plusSeconds(delay);
+            email.increaseAttemptsCount();
+            var nextAttempt = now.plusSeconds(delay);
             email.setNextAttempt(nextAttempt);
             email.setStatus(EmailStatus.FAILED_TO_SEND);
+            log.info("Resending email {} with delay {} seconds, attempt #{}",
+                    emailDto, delay, email.getSendingAttempts());
         }
     }
 }

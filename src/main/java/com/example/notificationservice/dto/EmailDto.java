@@ -4,6 +4,7 @@ import com.example.notificationservice.domain.Email;
 import com.example.notificationservice.domain.Recipient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class EmailDto {
     private Long templateId;
     private Set<RecipientDto> recipients;

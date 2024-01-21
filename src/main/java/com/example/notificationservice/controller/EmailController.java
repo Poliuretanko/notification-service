@@ -1,7 +1,7 @@
 package com.example.notificationservice.controller;
 
 import com.example.notificationservice.dto.EmailDto;
-import com.example.notificationservice.service.EmailService;
+import com.example.notificationservice.queue.producer.EmailNotificationProducer;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,14 +9,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class EmailController {
 
-    private final EmailService emailService;
+    private final EmailNotificationProducer emailNotificationProducer;
 
-    public EmailController(EmailService emailService) {
-        this.emailService = emailService;
+    public EmailController(EmailNotificationProducer emailNotificationProducer) {
+        this.emailNotificationProducer = emailNotificationProducer;
     }
 
+    /**
+     * Sends an email dto to the SQS query
+     */
     @PostMapping("/emails")
-    public void createEmail(@RequestBody EmailDto emailDto) {
-        emailService.saveNotification(emailDto);
+    public void createEmailNotification(@RequestBody EmailDto emailDto) {
+        emailNotificationProducer.send(emailDto);
     }
 }
